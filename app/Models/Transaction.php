@@ -2,27 +2,23 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
-    protected $fillable = [
-        'user_id', 
-        'type', 
-        'transaction_date'
-    ];
+    use HasFactory;
 
-    // Karena kolomnya bernama transaction_date, kita pastikan Laravel membacanya sebagai instance tanggal (Carbon)
-    protected $casts = [
-        'transaction_date' => 'datetime',
-    ];
+    protected $fillable = ['user_id', 'type', 'transaction_date'];
 
+    // Relasi ke tabel Users (Pencatat)
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function transactionDetails()
+    // Relasi ke tabel Transaction Details (Isi barangnya)
+    public function details()
     {
         return $this->hasMany(TransactionDetail::class);
     }

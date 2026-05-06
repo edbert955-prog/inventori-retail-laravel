@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -66,34 +67,66 @@ class ProductController extends Controller
         return redirect()->route('products.index')->with('success', 'Produk berhasil ditambahkan!');
     }
 
-    // Menampilkan form edit produk
-    public function edit(Product $product)
+    public function edit($id)
     {
+        $product = Product::findOrFail($id);
         $categories = Category::all();
         return view('products.edit', compact('product', 'categories'));
     }
 
-    // Memperbarui data produk
-    public function update(Request $request, Product $product)
+    // 2. Memproses pembaruan data produk
+    public function update(Request $request, $id)
     {
+        $product = Product::findOrFail($id);
+
         $validated = $request->validate([
             'category_id' => 'required|exists:categories,id',
-            'sku' => 'required|unique:products,sku,' . $product->id,
+            // Validasi unik untuk SKU, tapi abaikan SKU milik produk ini sendiri
+            'sku' => 'required|unique:products,sku,' . $product->id, 
             'name' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'price' => 'required|numeric',
             'stock' => 'required|numeric|min:0',
             'minimum_stock' => 'required|numeric|min:0',
         ]);
 
+        // Cek apakah user mengunggah gambar baru
+        if ($request->hasFile('image')) {
+            // Hapus gambar lama dari server jika ada
+            if ($product->image) {
+                Storage::disk('public')->delete($product->image);
+            }
+            // Simpan gambar baru
+            $imagePath = $request->file('image')->store('products', 'public');
+            $validated['image'] = $imagePath;
+        }
+
         $product->update($validated);
 
-        return redirect()->route('products.index')->with('success', 'Data produk berhasil diperbarui.');
+        return redirect()->route('products.index')->with('success', 'Data produk berhasil diperbarui!');
     }
 
-    // Menghapus produk
-    public function destroy(Product $product)
+    // 3. Menghapus data produk
+    public function destroy($id)
     {
-        $product->delete();
-        return redirect()->route('products.index')->with('success', 'Produk berhasil dihapus.');
+        $product = Product::findOrFail($id);
+
+        try {
+            // Hapus file gambar dari server jika ada
+            if ($product->image) {
+                Storage::disk('public')->delete($product->image);
+            }
+            
+            // Hapus data dari database
+            $product->delete();
+            return redirect()->route('products.index')->with('success', 'Produk berhasil dihapus!');
+            
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Ini untuk mencegah error jika produk gagal dihapus karena masih nyangkut di tabel transaksi (Integrity Constraint)
+            if ($e->getCode() == "23000") {
+                return redirect()->route('products.index')->with('error', 'Gagal: Produk ini tidak bisa dihapus karena sudah memiliki riwayat transaksi!');
+            }
+            return redirect()->route('products.index')->with('error', 'Terjadi kesalahan saat menghapus produk.');
+        }
     }
 }

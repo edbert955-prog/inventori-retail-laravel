@@ -25,11 +25,26 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+    
+    // === RUTE TRANSAKSI ===
+    // 1. Index (Daftar Transaksi)
+    Route::get('/transactions', [App\Http\Controllers\TransactionController::class, 'index'])->name('transactions.index');
 
+    // 2. Create (Form Tambah) -> WAJIB DI ATAS {id}
+    Route::get('/transactions/create', [App\Http\Controllers\TransactionController::class, 'create'])->name('transactions.create');
+
+    // 3. Store (Simpan Data)
+    Route::post('/transactions', [App\Http\Controllers\TransactionController::class, 'store'])->name('transactions.store');
+
+    // 4. Show (Detail Transaksi) -> WAJIB DI BAWAH create
+    Route::get('/transactions/{id}', [App\Http\Controllers\TransactionController::class, 'show'])->name('transactions.show');
+    
     // Route khusus Manajer (Laporan & Produk)
     Route::middleware(['role:manajer'])->group(function () {
         Route::resource('products', ProductController::class);
         // Route laporan di sini...
+        // Rute untuk melihat detail transaksi spesifik
+    
     });
 
     // Route khusus Staf (Transaksi)
@@ -37,6 +52,11 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('transactions', TransactionController::class);
     });
 });
+
+Route::get('/transactions', [App\Http\Controllers\TransactionController::class, 'index'])->name('transactions.index');
+
+Route::get('/transactions/create', [App\Http\Controllers\TransactionController::class, 'create'])->name('transactions.create');
+Route::post('/transactions', [App\Http\Controllers\TransactionController::class, 'store'])->name('transactions.store');
 
 Route::get('/dashboard', function () {
     // Mengambil data asli dari Database
