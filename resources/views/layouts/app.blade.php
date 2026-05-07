@@ -81,7 +81,7 @@
             </a>
         </nav>
         <div class="px-4 mt-auto pt-6 border-t border-slate-800 space-y-2">
-            <a class="text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg mx-2 my-1 flex items-center px-4 py-3 gap-3 transition-colors duration-200" href="#">
+            <a class="text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg mx-2 my-1 flex items-center px-4 py-3 gap-3 transition-colors duration-200" href="{{ route('settings') }}">
                 <span class="material-symbols-outlined text-[20px]">settings</span>
                 <span class="font-label-md">Settings</span>
             </a>

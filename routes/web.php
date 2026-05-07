@@ -22,6 +22,9 @@ Route::get('/laporan', [ProductController::class, 'report'])->name('laporan.inde
 
 // Route yang wajib login
 Route::middleware(['auth'])->group(function () {
+    Route::get('/settings', function () {
+        return view('settings');
+    })->name('settings');
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
