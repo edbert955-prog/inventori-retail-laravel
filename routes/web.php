@@ -5,6 +5,8 @@ use Laravel\Fortify\Features;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\SettingController;
+use App\Http\Controllers\HelpController;
 
 use App\Models\Product;
 use App\Models\Category;
@@ -17,14 +19,32 @@ Route::get('/', function () {
 // Route untuk Login
 Route::get('/login', [AuthController::class, 'index'])->name('login');
 Route::post('/login', [AuthController::class, 'authenticate']);
+Route::get('/register', [AuthController::class, 'register'])->name('register');
+Route::post('/register', [AuthController::class, 'storeRegister']);
+Route::get('/forgot-password', [AuthController::class, 'forgotPassword'])->name('password.request');
+Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/laporan', [ProductController::class, 'report'])->name('laporan.index');
 
 // Route yang wajib login
 Route::middleware(['auth'])->group(function () {
-    Route::get('/settings', function () {
-        return view('settings');
-    })->name('settings');
+    Route::get('/help', [HelpController::class, 'index'])->name('help.index');
+    Route::get('/help/{slug}', [HelpController::class, 'show'])->name('help.show');
+    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+    Route::put('/settings', [SettingController::class, 'update'])->name('settings.update');
+    
+    Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'index'])->name('profile.index');
+    Route::put('/profile/basic', [App\Http\Controllers\ProfileController::class, 'updateBasic'])->name('profile.updateBasic');
+    Route::put('/profile/password', [App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('profile.updatePassword');
+    Route::delete('/profile/avatar', [App\Http\Controllers\ProfileController::class, 'removeAvatar'])->name('profile.removeAvatar');
+
+    // Notifikasi
+    Route::post('/notifications/{id}/read', function ($id) {
+        $notification = auth()->user()->notifications()->findOrFail($id);
+        $notification->markAsRead();
+        return back();
+    })->name('notifications.read');
+
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');

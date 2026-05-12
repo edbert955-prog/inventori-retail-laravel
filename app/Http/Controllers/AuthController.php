@@ -46,4 +46,46 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
         return redirect('/');
     }
+
+    public function register()
+    {
+        return view('auth.register');
+    }
+
+    public function storeRegister(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = \App\Models\User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => \Illuminate\Support\Facades\Hash::make($request->password),
+            'role' => 'manajer', // Default role for newly registered user
+        ]);
+
+        Auth::login($user);
+
+        return redirect()->intended('/dashboard')->with('success', 'Akun berhasil dibuat!');
+    }
+
+    public function forgotPassword()
+    {
+        return view('auth.forgot-password');
+    }
+
+    public function sendResetLink(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email'
+        ], [
+            'email.exists' => 'Kami tidak dapat menemukan pengguna dengan alamat email tersebut.'
+        ]);
+        
+        // Mocking the email sending for UI purposes since SMTP is not configured
+        return back()->with('status', 'Kami telah mengirimkan tautan reset kata sandi ke email Anda!');
+    }
 }

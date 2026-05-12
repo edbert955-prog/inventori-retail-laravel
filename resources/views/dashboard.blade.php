@@ -114,7 +114,7 @@
             <span class="w-[8%] text-center">Feb</span>
             <span class="w-[8%] text-center">Mar</span>
             <span class="w-[8%] text-center">Apr</span>
-            <span class="w-[8%] text-center">May</span>
+            <span class="w-[8%] text-center">Mei</span>
             <span class="w-[8%] text-center">Jun</span>
             <span class="w-[8%] text-center">Jul</span>
         </div>

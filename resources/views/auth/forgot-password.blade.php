@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Masuk - {{ setting('app_name', 'Inventori Pro') }}</title>
+    <title>Lupa Kata Sandi - {{ setting('app_name', 'Inventori Pro') }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -79,7 +79,7 @@
     </div>
 
     <!-- Right Side: Auth Form -->
-    <div class="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 lg:p-24 relative">
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 lg:p-24 relative overflow-y-auto">
         
         <!-- Mobile Logo (only visible on small screens) -->
         <a href="/" class="absolute top-8 left-8 flex lg:hidden items-center gap-2">
@@ -94,19 +94,31 @@
         </a>
 
         <div class="w-full max-w-[400px]">
-            <div class="mb-10 text-center lg:text-left mt-12 lg:mt-0">
-                <h1 class="text-3xl font-semibold text-gray-900 tracking-tight mb-3">Selamat datang kembali</h1>
-                <p class="text-gray-500">Masukkan kredensial Anda untuk mengakses dashboard toko.</p>
+            <a href="{{ route('login') }}" class="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-brand-900 transition-colors mb-8">
+                <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                Kembali ke Login
+            </a>
+
+            <div class="mb-10 text-center lg:text-left mt-4 lg:mt-0">
+                <h1 class="text-3xl font-semibold text-gray-900 tracking-tight mb-3">Lupa Kata Sandi?</h1>
+                <p class="text-gray-500">Tidak masalah. Masukkan alamat email Anda, dan kami akan mengirimkan tautan untuk mengatur ulang kata sandi.</p>
             </div>
+
+            @if(session('status'))
+                <div class="bg-green-50 border border-green-100 p-4 rounded-xl flex items-start gap-3 mb-8">
+                    <span class="material-symbols-outlined text-green-500 text-[20px]">check_circle</span>
+                    <p class="text-sm text-green-700 leading-relaxed font-medium">{{ session('status') }}</p>
+                </div>
+            @endif
 
             @error('email')
-            <div class="bg-red-50 border border-red-100 p-4 rounded-xl flex items-start gap-3 mb-8">
-                <span class="material-symbols-outlined text-red-500 text-[20px]">error</span>
-                <p class="text-sm text-red-700 leading-relaxed font-medium">{{ $message }}</p>
-            </div>
+                <div class="bg-red-50 border border-red-100 p-4 rounded-xl flex items-start gap-3 mb-8">
+                    <span class="material-symbols-outlined text-red-500 text-[20px]">error</span>
+                    <p class="text-sm text-red-700 leading-relaxed font-medium">{{ $message }}</p>
+                </div>
             @enderror
 
-            <form method="POST" action="{{ route('login') }}" class="space-y-6">
+            <form method="POST" action="{{ route('password.email') }}" class="space-y-6">
                 @csrf 
 
                 <!-- Email Input -->
@@ -127,62 +139,16 @@
                     </div>
                 </div>
 
-                <!-- Password Input -->
-                <div class="space-y-2.5">
-                    <div class="flex items-center justify-between">
-                        <label class="text-sm font-medium text-gray-700" for="password">Kata Sandi</label>
-                        <a class="text-sm font-medium text-brand-900 hover:text-brand-800 transition-colors" href="{{ route('password.request') }}">Lupa sandi?</a>
-                    </div>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                            <span class="material-symbols-outlined text-gray-400 text-[18px]">lock</span>
-                        </div>
-                        <input class="w-full pl-10 pr-12 py-3 bg-gray-50/50 border border-gray-200 rounded-xl text-gray-900 text-sm focus:outline-none focus:border-brand-900 focus:ring-4 focus:ring-brand-100 transition-all placeholder:text-gray-400" 
-                               id="password" 
-                               name="password" 
-                               placeholder="••••••••" 
-                               type="password" 
-                               required/>
-                        <button type="button" onclick="togglePassword()" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none transition-colors">
-                            <span class="material-symbols-outlined text-[18px]" id="eye-icon">visibility_off</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Remember Me -->
-                <div class="flex items-center pt-2">
-                    <input id="remember_me" type="checkbox" class="w-4 h-4 text-brand-900 bg-gray-50 border-gray-300 rounded focus:ring-brand-900 focus:ring-2 cursor-pointer transition-all" name="remember">
-                    <label for="remember_me" class="ml-2.5 text-sm font-medium text-gray-600 cursor-pointer select-none">Ingat saya di perangkat ini</label>
-                </div>
-
                 <!-- Submit Button -->
-                <div class="pt-6">
+                <div class="pt-2">
                     <button class="w-full bg-brand-900 text-white font-medium text-sm py-3.5 px-4 rounded-xl hover:bg-gray-800 transition-all shadow-lg shadow-brand-900/15 active:scale-[0.98] flex items-center justify-center gap-2 group" 
                             type="submit">
-                        Masuk ke Dashboard
-                        <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                        Kirim Tautan Reset
+                        <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">send</span>
                     </button>
-                </div>
-                
-                <div class="text-center mt-8">
-                    <p class="text-sm text-gray-500">Belum punya akun? <a href="{{ route('register') }}" class="font-medium text-brand-900 hover:text-brand-800 transition-colors">Daftar sekarang</a></p>
                 </div>
             </form>
         </div>
     </div>
-    
-    <script>
-        function togglePassword() {
-            const input = document.getElementById('password');
-            const icon = document.getElementById('eye-icon');
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.textContent = 'visibility';
-            } else {
-                input.type = 'password';
-                icon.textContent = 'visibility_off';
-            }
-        }
-    </script>
 </body>
 </html>

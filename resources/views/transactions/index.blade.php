@@ -88,7 +88,22 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="px-6 py-8 text-center text-outline">Belum ada riwayat transaksi.</td>
+                        <td colspan="6" class="px-6 py-16 text-center">
+                            <div class="flex flex-col items-center justify-center max-w-sm mx-auto">
+                                <div class="w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mb-4">
+                                    <span class="material-symbols-outlined text-3xl">receipt_long</span>
+                                </div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-1">Riwayat Transaksi Kosong</h3>
+                                <p class="text-gray-500 text-sm mb-6 text-center">Belum ada aktivitas barang masuk atau keluar. Mulai catat transaksi untuk memantau pergerakan stok.</p>
+                                <a href="{{ route('transactions.create') }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition-colors shadow-sm">
+                                    <span class="material-symbols-outlined text-[18px]">add</span>
+                                    Catat Transaksi Pertama
+                                </a>
+                                @if(request('search') || (request('type') && request('type') != 'all'))
+                                    <p class="text-xs text-gray-400 mt-4">Atau coba <a href="{{ route('transactions.index') }}" class="text-blue-500 hover:underline">hapus filter pencarian</a></p>
+                                @endif
+                            </div>
+                        </td>
                     </tr>
                     @endforelse
 

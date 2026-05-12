@@ -13,16 +13,14 @@ use Carbon\Carbon;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // 1. Buat Data Akun Pengguna (Sesuai role di SKPL)
+        $this->call(SettingSeeder::class);
+
         $manajer = User::create([
             'name' => 'Bapak Manajer',
             'email' => 'admin@gmail.com',
-            'password' => Hash::make('admin1234'), // Password sesuai desain UI kamu
+            'password' => Hash::make('admin1234'), 
             'role' => 'manajer',
         ]);
 
@@ -62,7 +60,7 @@ class DatabaseSeeder extends Seeder
             'sku' => '800-624',
             'name' => 'Tas Ransel',
             'price' => 135000,
-            'stock' => 24, // Sengaja dibuat di bawah minimum untuk ngetes notifikasi stok kritis!
+            'stock' => 24,
             'minimum_stock' => 50,
         ]);
 
@@ -75,11 +73,10 @@ class DatabaseSeeder extends Seeder
             'minimum_stock' => 50,
         ]);
 
-        // 4. Buat Dummy Transaksi Masuk & Keluar
         $transaksiMasuk = Transaction::create([
             'user_id' => $staf->id,
             'type' => 'masuk',
-            'transaction_date' => Carbon::now()->subDays(2), // Transaksi 2 hari yang lalu
+            'transaction_date' => Carbon::now()->subDays(2), 
         ]);
 
         TransactionDetail::create([
@@ -97,7 +94,7 @@ class DatabaseSeeder extends Seeder
         $transaksiKeluar = Transaction::create([
             'user_id' => $staf->id,
             'type' => 'keluar',
-            'transaction_date' => Carbon::now()->subDay(), // Transaksi kemarin
+            'transaction_date' => Carbon::now()->subDay(), 
         ]);
 
         TransactionDetail::create([

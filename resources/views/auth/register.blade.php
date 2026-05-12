@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Masuk - {{ setting('app_name', 'Inventori Pro') }}</title>
+    <title>Daftar - {{ setting('app_name', 'Inventori Pro') }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -79,7 +79,7 @@
     </div>
 
     <!-- Right Side: Auth Form -->
-    <div class="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 lg:p-24 relative">
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 lg:p-24 relative overflow-y-auto">
         
         <!-- Mobile Logo (only visible on small screens) -->
         <a href="/" class="absolute top-8 left-8 flex lg:hidden items-center gap-2">
@@ -95,19 +95,44 @@
 
         <div class="w-full max-w-[400px]">
             <div class="mb-10 text-center lg:text-left mt-12 lg:mt-0">
-                <h1 class="text-3xl font-semibold text-gray-900 tracking-tight mb-3">Selamat datang kembali</h1>
-                <p class="text-gray-500">Masukkan kredensial Anda untuk mengakses dashboard toko.</p>
+                <h1 class="text-3xl font-semibold text-gray-900 tracking-tight mb-3">Buat Akun Baru</h1>
+                <p class="text-gray-500">Mulai rapikan stok toko Anda hari ini.</p>
             </div>
 
-            @error('email')
-            <div class="bg-red-50 border border-red-100 p-4 rounded-xl flex items-start gap-3 mb-8">
-                <span class="material-symbols-outlined text-red-500 text-[20px]">error</span>
-                <p class="text-sm text-red-700 leading-relaxed font-medium">{{ $message }}</p>
+            @if($errors->any())
+            <div class="bg-red-50 border border-red-100 p-4 rounded-xl flex flex-col gap-1 mb-8">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="material-symbols-outlined text-red-500 text-[20px]">error</span>
+                    <p class="text-sm text-red-700 font-medium">Terjadi Kesalahan:</p>
+                </div>
+                <ul class="list-disc list-inside text-sm text-red-600 pl-2">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
             </div>
-            @enderror
+            @endif
 
-            <form method="POST" action="{{ route('login') }}" class="space-y-6">
+            <form method="POST" action="{{ route('register') }}" class="space-y-6">
                 @csrf 
+
+                <!-- Name Input -->
+                <div class="space-y-2.5">
+                    <label class="text-sm font-medium text-gray-700" for="name">Nama Lengkap</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                            <span class="material-symbols-outlined text-gray-400 text-[18px]">person</span>
+                        </div>
+                        <input class="w-full pl-10 pr-4 py-3 bg-gray-50/50 border border-gray-200 rounded-xl text-gray-900 text-sm focus:outline-none focus:border-brand-900 focus:ring-4 focus:ring-brand-100 transition-all placeholder:text-gray-400" 
+                               id="name" 
+                               name="name" 
+                               placeholder="Nama Lengkap Anda" 
+                               type="text" 
+                               value="{{ old('name') }}" 
+                               required 
+                               autofocus/>
+                    </div>
+                </div>
 
                 <!-- Email Input -->
                 <div class="space-y-2.5">
@@ -122,17 +147,13 @@
                                placeholder="nama@toko.com" 
                                type="email" 
                                value="{{ old('email') }}" 
-                               required 
-                               autofocus/>
+                               required/>
                     </div>
                 </div>
 
                 <!-- Password Input -->
                 <div class="space-y-2.5">
-                    <div class="flex items-center justify-between">
-                        <label class="text-sm font-medium text-gray-700" for="password">Kata Sandi</label>
-                        <a class="text-sm font-medium text-brand-900 hover:text-brand-800 transition-colors" href="{{ route('password.request') }}">Lupa sandi?</a>
-                    </div>
+                    <label class="text-sm font-medium text-gray-700" for="password">Kata Sandi</label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                             <span class="material-symbols-outlined text-gray-400 text-[18px]">lock</span>
@@ -140,41 +161,54 @@
                         <input class="w-full pl-10 pr-12 py-3 bg-gray-50/50 border border-gray-200 rounded-xl text-gray-900 text-sm focus:outline-none focus:border-brand-900 focus:ring-4 focus:ring-brand-100 transition-all placeholder:text-gray-400" 
                                id="password" 
                                name="password" 
-                               placeholder="••••••••" 
+                               placeholder="Min. 8 karakter" 
                                type="password" 
                                required/>
-                        <button type="button" onclick="togglePassword()" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none transition-colors">
+                        <button type="button" onclick="togglePassword('password', 'eye-icon')" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none transition-colors">
                             <span class="material-symbols-outlined text-[18px]" id="eye-icon">visibility_off</span>
                         </button>
                     </div>
                 </div>
 
-                <!-- Remember Me -->
-                <div class="flex items-center pt-2">
-                    <input id="remember_me" type="checkbox" class="w-4 h-4 text-brand-900 bg-gray-50 border-gray-300 rounded focus:ring-brand-900 focus:ring-2 cursor-pointer transition-all" name="remember">
-                    <label for="remember_me" class="ml-2.5 text-sm font-medium text-gray-600 cursor-pointer select-none">Ingat saya di perangkat ini</label>
+                <!-- Confirm Password Input -->
+                <div class="space-y-2.5">
+                    <label class="text-sm font-medium text-gray-700" for="password_confirmation">Konfirmasi Kata Sandi</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                            <span class="material-symbols-outlined text-gray-400 text-[18px]">lock_reset</span>
+                        </div>
+                        <input class="w-full pl-10 pr-12 py-3 bg-gray-50/50 border border-gray-200 rounded-xl text-gray-900 text-sm focus:outline-none focus:border-brand-900 focus:ring-4 focus:ring-brand-100 transition-all placeholder:text-gray-400" 
+                               id="password_confirmation" 
+                               name="password_confirmation" 
+                               placeholder="Ulangi kata sandi" 
+                               type="password" 
+                               required/>
+                        <button type="button" onclick="togglePassword('password_confirmation', 'eye-icon-confirm')" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none transition-colors">
+                            <span class="material-symbols-outlined text-[18px]" id="eye-icon-confirm">visibility_off</span>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Submit Button -->
                 <div class="pt-6">
                     <button class="w-full bg-brand-900 text-white font-medium text-sm py-3.5 px-4 rounded-xl hover:bg-gray-800 transition-all shadow-lg shadow-brand-900/15 active:scale-[0.98] flex items-center justify-center gap-2 group" 
                             type="submit">
-                        Masuk ke Dashboard
+                        Daftar Akun
                         <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
                     </button>
                 </div>
                 
                 <div class="text-center mt-8">
-                    <p class="text-sm text-gray-500">Belum punya akun? <a href="{{ route('register') }}" class="font-medium text-brand-900 hover:text-brand-800 transition-colors">Daftar sekarang</a></p>
+                    <p class="text-sm text-gray-500">Sudah punya akun? <a href="{{ route('login') }}" class="font-medium text-brand-900 hover:text-brand-800 transition-colors">Masuk di sini</a></p>
                 </div>
             </form>
         </div>
     </div>
     
     <script>
-        function togglePassword() {
-            const input = document.getElementById('password');
-            const icon = document.getElementById('eye-icon');
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
             if (input.type === 'password') {
                 input.type = 'text';
                 icon.textContent = 'visibility';

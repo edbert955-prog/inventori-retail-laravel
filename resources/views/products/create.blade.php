@@ -24,8 +24,12 @@
                 </div>
 
                 <div>
-                    <label class="block font-label-md text-on-surface mb-2">Kode Produk (SKU) <span class="text-error">*</span></label>
-                    <input type="text" name="sku" value="{{ old('sku') }}" class="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" required>
+                    <div class="flex items-center gap-2 mb-2">
+                        <label class="block font-label-md text-on-surface">Kode Produk (SKU) <span class="text-error">*</span></label>
+                        <span class="material-symbols-outlined text-[16px] text-gray-400 cursor-help" title="Stock Keeping Unit. Kode unik untuk membedakan produk, misal: KOS-001">help</span>
+                    </div>
+                    <input type="text" name="sku" value="{{ old('sku') }}" class="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" placeholder="Cth: KOS-001" required>
+                    <p class="text-xs text-gray-500 mt-1">Gunakan kombinasi huruf dan angka.</p>
                     @error('sku') <span class="text-error text-sm">{{ $message }}</span> @enderror
                 </div>
 
@@ -59,7 +63,10 @@
                         @error('stock') <span class="text-error text-sm">{{ $message }}</span> @enderror
                     </div>
                     <div>
-                        <label class="block font-label-md text-on-surface mb-2">Batas Min. Stok <span class="text-error">*</span></label>
+                        <div class="flex items-center gap-2 mb-2">
+                            <label class="block font-label-md text-on-surface">Batas Min. Stok <span class="text-error">*</span></label>
+                            <span class="material-symbols-outlined text-[16px] text-gray-400 cursor-help" title="Sistem akan memberi peringatan jika stok produk menyentuh angka ini.">help</span>
+                        </div>
                         <input type="number" name="minimum_stock" value="{{ old('minimum_stock') }}" class="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" required>
                         @error('minimum_stock') <span class="text-error text-sm">{{ $message }}</span> @enderror
                     </div>

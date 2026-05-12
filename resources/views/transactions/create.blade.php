@@ -28,7 +28,10 @@
             <!-- Bagian 1: Informasi Umum -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter mb-stack-lg">
                 <div class="flex flex-col gap-stack-sm">
-                    <label class="font-label-md text-on-surface-variant">Jenis Transaksi</label>
+                    <div class="flex items-center gap-2">
+                        <label class="font-label-md text-on-surface-variant">Jenis Transaksi</label>
+                        <span class="material-symbols-outlined text-[16px] text-gray-400 cursor-help" title="Barang Masuk menambah stok. Barang Keluar mengurangi stok.">help</span>
+                    </div>
                     <select name="type" class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2.5 font-body-md text-on-surface focus:outline-none focus:border-primary" required>
                         <option value="">Pilih Jenis Transaksi</option>
                         <option value="masuk">Barang Masuk (Restock)</option>
@@ -51,7 +54,10 @@
                     <!-- Baris 1 (Default) -->
                     <div class="product-row flex flex-col sm:flex-row items-end gap-stack-md mb-stack-md">
                         <div class="flex-1 w-full flex flex-col gap-stack-sm">
-                            <label class="font-label-md text-on-surface-variant">Pilih Produk</label>
+                            <div class="flex items-center gap-2">
+                                <label class="font-label-md text-on-surface-variant">Pilih Produk</label>
+                                <span class="material-symbols-outlined text-[16px] text-gray-400 cursor-help" title="Ketik untuk mencari. Pastikan produk sudah terdaftar di menu Produk.">info</span>
+                            </div>
                             <select name="product_id[]" class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2.5 font-body-md text-on-surface focus:outline-none focus:border-primary" required>
                                 <option value="">Pilih Produk dari Katalog</option>
                                 @foreach($products as $product)

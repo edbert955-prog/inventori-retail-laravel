@@ -6,8 +6,11 @@ namespace App\Http\Controllers;
     use App\Models\TransactionDetail;
     use Illuminate\Support\Facades\Auth;
     use Illuminate\Support\Facades\DB;
-use App\Models\Transaction;
-use Illuminate\Http\Request;
+    use App\Models\Transaction;
+    use App\Models\User;
+    use Illuminate\Http\Request;
+    use Illuminate\Support\Facades\Notification;
+    use App\Notifications\LowStockNotification;
 
 class TransactionController extends Controller
 {
@@ -78,6 +81,12 @@ class TransactionController extends Controller
                     $product->stock -= $qty;
                 }
                 $product->save();
+
+                // Trigger Notifikasi jika stok rendah setelah transaksi keluar
+                if ($request->type == 'keluar' && $product->stock <= $product->minimum_stock) {
+                    $managers = User::where('role', 'manajer')->get();
+                    Notification::send($managers, new LowStockNotification($product));
+                }
 
                 // Simpan ke tabel pivot transaction_details
                 TransactionDetail::create([
